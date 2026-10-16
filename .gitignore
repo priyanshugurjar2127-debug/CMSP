@@ -1,0 +1,5 @@
+target/
+.idea/
+*.iml
+contacts.txt
+.DS_Store
