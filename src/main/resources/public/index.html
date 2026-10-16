@@ -1,0 +1,388 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Management System</title>
+<style>
+:root{color-scheme:dark;--bg:#090d1b;--panel:rgba(20,28,52,.72);--line:rgba(255,255,255,.11);--muted:#9aa8c7;--text:#f4f7ff;--blue:#7c8cff;--cyan:#54e3d1;--danger:#ff7188}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;color:var(--text);background:radial-gradient(ellipse at 15% 5%,rgba(75,91,210,.26),transparent 36%),radial-gradient(ellipse at 85% 20%,rgba(29,190,180,.13),transparent 30%),var(--bg)}
+.wrap{max-width:1180px;margin:auto;padding:36px 22px 60px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:28px}
+.brand{display:flex;align-items:center;gap:13px}
+.logo{width:48px;height:48px;border-radius:16px;background:linear-gradient(135deg,var(--blue),#5ce0d2);display:grid;place-items:center;color:#0a1124;font-weight:900;font-size:23px;box-shadow:0 8px 30px #6177ff44}
+.eyebrow{color:var(--cyan);text-transform:uppercase;letter-spacing:.16em;font-size:11px;font-weight:800}
+.brand h1{font-size:clamp(20px,3vw,29px);margin:3px 0 0;letter-spacing:-.04em}
+.status{border:1px solid var(--line);background:#ffffff08;border-radius:999px;padding:9px 13px;color:#c7d4ef;font-size:12px;white-space:nowrap}
+.status:before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#5ce0b0;margin-right:8px;box-shadow:0 0 12px #5ce0b0}
+.hero{display:grid;grid-template-columns:1.5fr 1fr;gap:18px;margin-bottom:18px}
+.glass{background:var(--panel);border:1px solid var(--line);border-radius:24px;backdrop-filter:blur(18px);box-shadow:0 18px 60px #0002}
+.welcome{padding:28px;position:relative;overflow:hidden}
+.welcome:after{content:"";position:absolute;width:200px;height:200px;right:-60px;top:-80px;border-radius:50%;background:#7c8cff1b;filter:blur(3px)}
+.welcome h2{font-size:clamp(24px,3.5vw,38px);letter-spacing:-.05em;line-height:1.12;margin:8px 0 10px;max-width:480px}
+.welcome p{color:var(--muted);line-height:1.6;margin:0;max-width:540px}
+.stats{padding:22px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.stat{border:1px solid var(--line);border-radius:17px;padding:18px;background:#ffffff04}
+.stat span{font-size:12px;color:var(--muted)}
+.stat strong{display:block;font-size:29px;margin-top:8px;letter-spacing:-.04em}
+.stat .accent{color:var(--cyan)}
+.main{display:grid;grid-template-columns:350px 1fr;gap:18px;align-items:start}
+.form-card,.list-card{padding:23px}
+.card-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px}
+.card-title h3{margin:0;font-size:17px;letter-spacing:-.02em}
+.sub{color:var(--muted);font-size:12px;margin-top:5px}
+.field{display:block;margin-bottom:13px}
+.field label{display:block;font-size:12px;color:#c2cde5;margin-bottom:7px}
+.field input{width:100%;background:#080d1d99;color:var(--text);border:1px solid var(--line);border-radius:12px;padding:12px 13px;font:inherit;font-size:13px;outline:none;transition:.2s}
+.field input:focus{border-color:#8490ff;box-shadow:0 0 0 3px #7c8cff20}
+.btn{border:0;border-radius:12px;padding:12px 15px;font-weight:750;cursor:pointer;font:inherit;font-size:13px;transition:transform .15s,opacity .15s}
+.btn:hover{transform:translateY(-1px)}
+.primary{background:linear-gradient(110deg,#8993ff,#54e3d1);color:#091224;width:100%}
+.secondary{background:#ffffff0b;color:var(--text);border:1px solid var(--line)}
+.danger{background:#ff71881a;color:#ff9cac;border:1px solid #ff71882e}
+.tools{display:flex;gap:10px;margin-bottom:15px}
+.search{flex:1;min-width:0;background:#080d1d99;border:1px solid var(--line);color:var(--text);border-radius:12px;padding:12px 14px;font:inherit;font-size:13px;outline:none}
+.search:focus{border-color:#8490ff}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:15px}
+table{border-collapse:collapse;width:100%;min-width:610px;text-align:left}
+th{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#92a2c5;background:#ffffff05}
+th,td{padding:14px 13px;border-bottom:1px solid #ffffff0b}
+td{font-size:12px;color:#dce5f9}
+tr:last-child td{border-bottom:0}
+.name{font-weight:750;color:#fff;font-size:13px}
+.phone{color:var(--cyan);font-variant-numeric:tabular-nums}
+.actions{display:flex;gap:6px}
+.mini{padding:7px 9px;font-size:11px;border-radius:9px}
+.empty{text-align:center;padding:36px 15px;color:var(--muted);font-size:13px}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);padding:12px 18px;background:#1a2440;border:1px solid var(--line);border-radius:13px;box-shadow:0 12px 40px #0006;font-size:13px;display:none;z-index:10;max-width:90vw}
+.toast.show{display:block}
+.toast.bad{border-color:#ff718877;color:#ffb0bc}
+.foot{text-align:center;color:#667596;font-size:11px;margin-top:22px}
+@media(max-width:850px){.hero{grid-template-columns:1fr}.main{grid-template-columns:1fr}.form-card{order:0}.list-card{order:1}}
+@media(max-width:520px){.wrap{padding:22px 13px 35px}.top{align-items:flex-start}.status{font-size:10px;padding:8px}.welcome,.form-card,.list-card{padding:18px}.stats{padding:14px}.stat{padding:14px}.tools{flex-wrap:wrap}.search{flex-basis:100%}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <div class="brand">
+    <div class="logo">C</div>
+    <div>
+      <div class="eyebrow">Personal workspace</div>
+      <h1>Contact Management</h1>
+    </div>
+  </div>
+  <div class="status">System ready</div>
+</header>
+
+<section class="hero">
+  <div class="glass welcome">
+    <div class="eyebrow">Your contacts, organized</div>
+    <h2>Every connection.<br>One clear view.</h2>
+    <p>Keep important people close. Add, find, edit and manage your contacts from one simple dashboard.</p>
+  </div>
+  <div class="glass stats">
+    <div class="stat">
+      <span>Total contacts</span>
+      <strong id="total">0</strong>
+    </div>
+    <div class="stat">
+      <span>Filtered results</span>
+      <strong class="accent" id="shown">0</strong>
+    </div>
+  </div>
+</section>
+
+<section class="main">
+  <aside class="glass form-card">
+    <div class="card-title">
+      <div>
+        <h3 id="formTitle">Add a contact</h3>
+        <div class="sub">Fields marked * are required</div>
+      </div>
+      <span style="color:var(--cyan)">＋</span>
+    </div>
+
+    <form id="contactForm">
+      <label class="field">
+        <label for="name">Full name *</label>
+        <input id="name" name="name" maxlength="100"
+          placeholder="e.g. Rahul Sharma" required>
+      </label>
+
+      <label class="field">
+        <label for="phone">Phone number *</label>
+        <input id="phone" name="phone" inputmode="numeric"
+          pattern="[0-9]{10}" maxlength="10"
+          placeholder="10-digit mobile number" required>
+      </label>
+
+      <label class="field">
+        <label for="email">Email address</label>
+        <input id="email" name="email" type="email"
+          maxlength="150" placeholder="name@example.com">
+      </label>
+
+      <label class="field">
+        <label for="address">Address</label>
+        <input id="address" name="address" maxlength="250"
+          placeholder="City or full address">
+      </label>
+
+      <button class="btn primary" id="saveBtn" type="submit">
+        ＋ Save contact
+      </button>
+
+      <button class="btn secondary" id="cancelBtn" type="button"
+        style="display:none;width:100%;margin-top:9px">
+        Cancel edit
+      </button>
+    </form>
+  </aside>
+
+  <section class="glass list-card">
+    <div class="card-title">
+      <div>
+        <h3>Your directory</h3>
+        <div class="sub">Contacts are sorted alphabetically</div>
+      </div>
+      <button class="btn secondary" id="refreshBtn" type="button">
+        ↻ Refresh
+      </button>
+    </div>
+
+    <div class="tools">
+      <input id="search" class="search"
+        placeholder="⌕ Search by name..."
+        aria-label="Search by name">
+      <button id="clearSearch" class="btn secondary" type="button">
+        Clear
+      </button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Address</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <div id="empty" class="empty">Loading contacts…</div>
+    </div>
+  </section>
+</section>
+
+<div class="foot">Contact Management System · Built with Java</div>
+</div>
+
+<div id="toast" class="toast" role="status"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+let allContacts = [];
+let editingPhone = null;
+let toastTimer;
+
+function notify(message, bad = false) {
+  const el = $('toast');
+  el.textContent = message;
+  el.className = 'toast show' + (bad ? ' bad' : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    el.className = 'toast';
+  }, 3200);
+}
+
+async function api(url, options = {}) {
+  const response = await fetch(url, {
+    headers: { 'Content-Type': 'application/json' },
+    ...options
+  });
+
+  const data = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(
+      data.error || 'Request failed. Please try again.'
+    );
+  }
+
+  return data;
+}
+
+async function loadContacts() {
+  try {
+    allContacts = await api('/api/contacts');
+    render();
+  } catch (e) {
+    notify(e.message, true);
+    $('empty').textContent =
+      'Could not load contacts. Please refresh.';
+  }
+}
+
+function render() {
+  const q = $('search').value.trim().toLowerCase();
+
+  const list = allContacts.filter(c =>
+    (c.name || '').toLowerCase().includes(q)
+  );
+
+  $('total').textContent = allContacts.length;
+  $('shown').textContent = list.length;
+  $('rows').innerHTML = '';
+
+  $('empty').style.display = list.length ? 'none' : 'block';
+
+  if (!list.length) {
+    $('empty').textContent = q
+      ? 'No contacts match your search.'
+      : 'No contacts yet. Add your first contact using the form.';
+    return;
+  }
+
+  for (const c of list) {
+    const tr = document.createElement('tr');
+    const vals = [
+      c.name || '',
+      c.phone || '',
+      c.email || '—',
+      c.address || '—'
+    ];
+
+    vals.forEach((v, i) => {
+      const td = document.createElement('td');
+      td.textContent = v;
+      if (i === 0) td.className = 'name';
+      if (i === 1) td.className = 'phone';
+      tr.appendChild(td);
+    });
+
+    const actions = document.createElement('td');
+
+    actions.innerHTML =
+      '<div class="actions">' +
+      '<button class="btn secondary mini" data-action="edit">Edit</button>' +
+      '<button class="btn danger mini" data-action="delete">Delete</button>' +
+      '</div>';
+
+    actions.querySelector('[data-action="edit"]')
+      .addEventListener('click', () => startEdit(c));
+
+    actions.querySelector('[data-action="delete"]')
+      .addEventListener('click', () => removeContact(c));
+
+    tr.appendChild(actions);
+    $('rows').appendChild(tr);
+  }
+}
+
+function startEdit(c) {
+  editingPhone = c.phone;
+
+  $('formTitle').textContent = 'Edit contact';
+  $('saveBtn').textContent = 'Save changes';
+  $('cancelBtn').style.display = 'block';
+  $('phone').disabled = true;
+
+  $('name').value = c.name || '';
+  $('phone').value = c.phone || '';
+  $('email').value = c.email || '';
+  $('address').value = c.address || '';
+
+  $('name').focus();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function resetForm() {
+  $('contactForm').reset();
+  editingPhone = null;
+  $('formTitle').textContent = 'Add a contact';
+  $('saveBtn').textContent = '＋ Save contact';
+  $('cancelBtn').style.display = 'none';
+  $('phone').disabled = false;
+}
+
+$('contactForm').addEventListener('submit', async e => {
+  e.preventDefault();
+
+  const contact = {
+    name: $('name').value.trim(),
+    phone: $('phone').value.trim(),
+    email: $('email').value.trim(),
+    address: $('address').value.trim()
+  };
+
+  try {
+    if (editingPhone) {
+      await api(
+        '/api/contacts/' + encodeURIComponent(editingPhone),
+        {
+          method: 'PUT',
+          body: JSON.stringify({
+            name: contact.name,
+            email: contact.email,
+            address: contact.address
+          })
+        }
+      );
+
+      notify('Contact updated successfully.');
+    } else {
+      await api('/api/contacts', {
+        method: 'POST',
+        body: JSON.stringify(contact)
+      });
+
+      notify('Contact added successfully.');
+    }
+
+    resetForm();
+    await loadContacts();
+  } catch (err) {
+    notify(err.message, true);
+  }
+});
+
+async function removeContact(c) {
+  if (!confirm('Delete ' + c.name + ' from your contacts?')) {
+    return;
+  }
+
+  try {
+    await api(
+      '/api/contacts/' + encodeURIComponent(c.phone),
+      { method: 'DELETE' }
+    );
+
+    if (editingPhone === c.phone) resetForm();
+
+    notify('Contact deleted.');
+    await loadContacts();
+  } catch (e) {
+    notify(e.message, true);
+  }
+}
+
+$('cancelBtn').addEventListener('click', resetForm);
+$('refreshBtn').addEventListener('click', loadContacts);
+$('search').addEventListener('input', render);
+
+$('clearSearch').addEventListener('click', () => {
+  $('search').value = '';
+  render();
+});
+
+loadContacts();
+</script>
+</body>
+</html>
